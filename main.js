@@ -1,4 +1,5 @@
-//create divs for operators
+function createCalc(){
+    //create divs for operators
 const operators = document.querySelector('.operators');
 const numOfOperators = 7;
 for (let i = 0; i < numOfOperators; i++){
@@ -44,4 +45,118 @@ for (let i = 0; i <numOfMisc; i++){
     div.style.color = 'white'
     div.textContent = i;
     miscFunctions.appendChild(div);
+}
+}
+createCalc();
+var firstNum,secondNum,operator;
+
+//============basic functions==============
+function plus(a,b){
+    return a+b;
+}
+function minus(a,b){
+    return a-b;
+}
+function divide(a,b){
+    return a/b;
+}
+function mul(a,b){
+    return a*b;
+}
+function percentage(a){
+    return a/100;
+}
+
+
+//============misc functions==============
+
+function oneOverX(a){
+    return 1/a;
+}
+function power(a,b){
+    return a**b;
+}
+function factorial(a){
+    if (a === 0) return 1;
+    return a*factorial(a-1);
+}
+function sqrt(a){
+    return Math.sqrt(a);
+}
+function log(a){
+    return Math.log(a);
+}
+function square(a){
+    return a**2;
+}
+
+//clear and backspace functions
+function clearAll(){
+    const display = document.querySelector('.display');
+    display.textContent = '';
+    firstNum = '';
+    secondNum = '';
+    operator = '';
+}
+
+function backspace(){
+    const display = document.querySelector('.display');
+    var currentDisplay = display.textContent
+    display.textContent = currentDisplay.substring(0, currentDisplay.length-1);
+}
+
+//============display functions==============
+function displayOperator(operator){
+    const display = document.querySelector('.display');
+    display.textContent += operator;
+}
+function displayNumber(digit){
+    const display = document.querySelector('.display');
+    display.textContent += digit;
+}
+//============calculate functions==============
+function calculate(){
+    const display = document.querySelector('.display');
+    let result;
+    firstNum = parseInt(firstNum);
+    secondNum = parseInt(secondNum);
+    switch(operator){
+        case '+':
+            result = plus(firstNum,secondNum);
+            break;
+        case '-':
+            result = minus(firstNum,secondNum);
+            break;
+        case '*':
+            result = mul(firstNum,secondNum);
+            break;
+        case '/':
+            result = divide(firstNum,secondNum);
+            break;
+        case '%':
+            result = percentage(firstNum);
+            break;
+        case '1/x':
+            result = oneOverX(firstNum);
+            break;
+        case 'x^y':
+            result = power(firstNum,secondNum);
+            break;
+        case 'x!':
+            result = factorial(firstNum);
+            break;
+        case 'sqrt':
+            result = sqrt(firstNum);
+            break;
+        case 'log':
+            result = log(firstNum);
+            break;
+        case 'x^2':
+            result = square(firstNum);
+            break;
+    }
+    display.textContent = result;
+    firstNum = result;
+    secondNum = '';
+    operator = '';
 }
