@@ -2,6 +2,7 @@ function createCalc(){
     //create divs for operators
 const operators = document.querySelector('.operators');
 const numOfOperators = 7;
+const operatorList = ['del', 'AC', '/', '*', '-', '+', '='];
 for (let i = 0; i < numOfOperators; i++){
     const div = document.createElement('div');
     div.classList.add('operator-item');
@@ -9,12 +10,12 @@ for (let i = 0; i < numOfOperators; i++){
     div.style.height = `${100/numOfOperators}%`;
     div.style.backgroundColor = `rgb(${(i+1)*(255/numOfOperators)},0,0)`;
     div.style.color = 'white'
-    div.textContent = i;
+    div.textContent = operatorList[i];
     operators.appendChild(div);
 }
 
 //create divs for numbers
-
+const digitList = [7,8,9,4,5,6,1,2,3,'+/-', 0, '.'];
 const digits = document.querySelector('.digits');
 const digitsInAColumn = 4;
 const digitsInARow = 3;
@@ -26,12 +27,12 @@ for (let i = 0; i < numOfDigits; i++){
     div.style.width = `${100/digitsInARow}%`;
     div.style.backgroundColor = `rgb(0,${(i+1)*(255/numOfDigits)},0)`;
     div.style.color = 'white'
-    div.textContent = i;
+    div.textContent = digitList[i];
     digits.appendChild(div);
 }
 
 //create divs for misc functions
-
+const miscList = ['pi', 'e', '1/x', 'y^', '!', 'sqrt', 'log', '^2', '%'];
 const miscFunctions = document.querySelector('.misc');
 const miscInAColumn = 3;
 const miscInARow = 3;
@@ -43,7 +44,7 @@ for (let i = 0; i <numOfMisc; i++){
     div.style.width = `${100/miscInARow}%`;
     div.style.backgroundColor = `rgb(0,0,${(i+1)*(255/numOfMisc)})`;
     div.style.color = 'white'
-    div.textContent = i;
+    div.textContent = miscList[i];
     miscFunctions.appendChild(div);
 }
 }
@@ -62,9 +63,6 @@ function divide(a,b){
 }
 function mul(a,b){
     return a*b;
-}
-function percentage(a){
-    return a/100;
 }
 
 
@@ -89,6 +87,10 @@ function log(a){
 function square(a){
     return a**2;
 }
+function percentage(a){
+    return a/100;
+}
+
 
 //clear and backspace functions
 function clearAll(){
@@ -160,3 +162,5 @@ function calculate(){
     secondNum = '';
     operator = '';
 }
+
+
