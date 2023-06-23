@@ -2,53 +2,59 @@ var firstNum= '',secondNum= '',operator = '';
 //======fucntion to create calc
 function createCalc(){
     //create divs for operators
-const operators = document.querySelector('.operators');
-const numOfOperators = 7;
-const operatorList = ['del', 'AC', '/', '*', '-', '+', '='];
-for (let i = 0; i < numOfOperators; i++){
-    const div = document.createElement('div');
-    div.classList.add('operator-item');
-    div.style.width = '100%';
-    div.style.height = `${100/numOfOperators}%`;
-    div.style.backgroundColor = `rgb(${(i+1)*(255/numOfOperators)},0,0)`;
-    div.style.color = 'white'
-    div.textContent = operatorList[i];
-    operators.appendChild(div);
-}
+    const operators = document.querySelector('.operators');
+    const numOfOperators = 7;
+    const operatorList = ['del', 'AC', '/', '*', '-', '+', '='];
+    for (let i = 0; i < numOfOperators; i++){
+        const div = document.createElement('div');
+        const span = document.createElement('span');
+        div.classList.add('operator-item');
+        div.style.width = '100%';
+        div.style.height = `${100/numOfOperators}%`;
+        span.style.width = '100%';
+        span.style.height = '100%';
+        span.textContent = operatorList[i];
+        div.appendChild(span);
+        operators.appendChild(div);
+    }
 
-//create divs for numbers
-const digitList = [7,8,9,4,5,6,1,2,3,'+/-', 0, '.'];
-const digits = document.querySelector('.digits');
-const digitsInAColumn = 4;
-const digitsInARow = 3;
-const numOfDigits = digitsInAColumn*digitsInARow;
-for (let i = 0; i < numOfDigits; i++){
-    const div = document.createElement('div');
-    div.classList.add('digit-item');
-    div.style.height = `${100/digitsInAColumn}%`;
-    div.style.width = `${100/digitsInARow}%`;
-    div.style.backgroundColor = `rgb(0,${(i+1)*(255/numOfDigits)},0)`;
-    div.style.color = 'white'
-    div.textContent = digitList[i];
-    digits.appendChild(div);
-}
+    //create divs for numbers
+    const digitList = [7,8,9,4,5,6,1,2,3,'+/-', 0, '.'];
+    const digits = document.querySelector('.digits');
+    const digitsInAColumn = 4;
+    const digitsInARow = 3;
+    const numOfDigits = digitsInAColumn*digitsInARow;
+    for (let i = 0; i < numOfDigits; i++){
+        const div = document.createElement('div');
+        const span = document.createElement('span');
+        div.classList.add('digit-item');
+        div.style.height = `${100/digitsInAColumn}%`;
+        div.style.width = `${100/digitsInARow}%`;
+        span.style.width = '100%';
+        span.style.height = '100%';
+        span.textContent = digitList[i];
+        div.appendChild(span);
+        digits.appendChild(div);
+    }
 
-//create divs for misc functions
-const miscList = ['pi', 'e', '1/x', 'y^', '!', 'sqrt', 'log', '^2', '%'];
-const miscFunctions = document.querySelector('.misc');
-const miscInAColumn = 3;
-const miscInARow = 3;
-const numOfMisc = miscInAColumn*miscInARow;
-for (let i = 0; i <numOfMisc; i++){
-    const div = document.createElement('div');
-    div.classList.add('misc-item');
-    div.style.height = `${100/miscInAColumn}%`;
-    div.style.width = `${100/miscInARow}%`;
-    div.style.backgroundColor = `rgb(0,0,${(i+1)*(255/numOfMisc)})`;
-    div.style.color = 'white'
-    div.textContent = miscList[i];
-    miscFunctions.appendChild(div);
-}
+    //create divs for misc functions
+    const miscList = ['pi', 'e', '1/x', 'y^', '!', 'sqrt', 'log', '^2', '%'];
+    const miscFunctions = document.querySelector('.misc');
+    const miscInAColumn = 3;
+    const miscInARow = 3;
+    const numOfMisc = miscInAColumn*miscInARow;
+    for (let i = 0; i <numOfMisc; i++){
+        const div = document.createElement('div');
+        const span = document.createElement('span');
+        div.classList.add('misc-item');
+        div.style.height = `${100/miscInAColumn}%`;
+        div.style.width = `${100/miscInARow}%`;
+        span.style.width = '100%';
+        span.style.height = '100%';
+        span.textContent = miscList[i];
+        div.appendChild(span);
+        miscFunctions.appendChild(div);
+    }
 }
 //============basic functions==============
 function plus(a,b){
@@ -115,7 +121,7 @@ function handleOverflow(num,where='bottom',isOverflowing='true'){
     isOverflowing = isOverflowing;
     if (isOverflowing) {
             if (`${num}`.includes('.')){
-        maxLength = where === 'bottom' ? 14 : 12;
+        maxLength = where === 'bottom' ? 12 : 10;
         var intPartLength = `${num - (num % 1.0)}`.length;   
         return (maxLength - intPartLength) < 0 ? `${(num).toExponential(maxLength/2)}` : num.toFixed(maxLength - intPartLength);
     }
@@ -184,6 +190,7 @@ function isEqual(){
             displayBottom.textContent = handleOverflow(firstNum, 'bottom');
         }
         displayTop.textContent = '';
+        operator = '';
         firstNum = '';
         secondNum = '';
     } 
@@ -198,28 +205,37 @@ function changeSign(){
     }
 }
 function setOperator(oper){
-    operator = oper;
     const displayBottom = document.querySelector('.display-bottom');
     const displayTop = document.querySelector('.display-top');
-    if (firstNum === ''){
-        firstNum = displayBottom.textContent;
-        displayBottom.textContent = '';
-        displayTop.textContent = firstNum + oper;
-        var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
-    if (isOverflowing){
+    if (displayBottom.textContent === '' && displayTop.textContent === ''){
+        //pass
+    } 
+    else if (operator != '') {
+        operator = oper;
         displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+    }  else {
+        operator = oper;
+        if (firstNum === ''){
+            firstNum = displayBottom.textContent;
+            displayBottom.textContent = '';
+            displayTop.textContent = firstNum + oper;
+            var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
+        if (isOverflowing){
+            displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+        }
+        } else if (displayBottom.textContent != '') {
+            var prevOper = (displayTop.textContent);
+            prevOper = prevOper[prevOper.length -1];
+            secondNum = displayBottom.textContent;
+            console.log(prevOper);
+            firstNum = calculate(firstNum, prevOper, secondNum);
+            console.log(firstNum);
+            secondNum = '';
+            displayBottom.textContent = '';
+            displayTop.textContent = firstNum + oper;
+        } 
     }
-    } else if (displayBottom.textContent != '') {
-        var prevOper = (displayTop.textContent);
-        prevOper = prevOper[prevOper.length -1];
-        secondNum = displayBottom.textContent;
-        console.log(prevOper);
-        firstNum = calculate(firstNum, prevOper, secondNum);
-        console.log(firstNum);
-        secondNum = '';
-        displayBottom.textContent = '';
-        displayTop.textContent = firstNum + oper;
-    }
+
     
 
 }
@@ -270,6 +286,7 @@ const miscButtons = document.querySelectorAll('.misc-item');
 miscButtons.forEach((button) => button.addEventListener('click', () => {
     const displayBottom = document.querySelector('.display-bottom')
     const currentNum = displayBottom.textContent;
+    const topExpr = document.querySelector('.display-top').textContent;
     switch(button.textContent){
         case 'pi':
             if (currentNum === ''){
@@ -294,7 +311,8 @@ miscButtons.forEach((button) => button.addEventListener('click', () => {
                 }
             }
         case 'y^':
-            if (currentNum != ''){
+            if ((currentNum != '' && topExpr === '') ||(currentNum === '' && topExpr != '') || (currentNum != '' && topExpr != '')){
+                console.log(topExpr);
                 setOperator(('^'));
                 break;
             }
