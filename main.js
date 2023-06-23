@@ -153,7 +153,7 @@ function calculate(firstNum, oper, secondNum){
         case '1/x':
             result = oneOverX(firstNum);
             break;
-        case 'y^':
+        case '^':
             result = power(firstNum,secondNum);
             break;
         case 'x!':
@@ -295,7 +295,7 @@ miscButtons.forEach((button) => button.addEventListener('click', () => {
             }
         case 'y^':
             if (currentNum != ''){
-                setOperator(('y^'));
+                setOperator(('^'));
                 break;
             }
         case '!':
