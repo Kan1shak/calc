@@ -73,6 +73,10 @@ function setOperator(oper){
         firstNum = displayBottom.textContent;
         displayBottom.textContent = '';
         displayTop.textContent = firstNum + oper;
+        var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
+    if (isOverflowing){
+        displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+    }
     } else if (displayBottom.textContent != '') {
         var prevOper = (displayTop.textContent);
         prevOper = prevOper[prevOper.length -1];
@@ -126,8 +130,10 @@ function percentage(a){
 
 //clear and backspace functions
 function clearAll(){
-    const display = document.querySelector('.display-bottom');
-    display.textContent = '';
+    const displayBottom = document.querySelector('.display-bottom');
+    const displayTop = document.querySelector('.display-top');
+    displayBottom.textContent = '';
+    displayTop.textContent = '';
     firstNum = '';
     secondNum = '';
     operator = '';
@@ -190,8 +196,14 @@ function calculate(firstNum, oper, secondNum){
             result = square(firstNum);
             break;
     }
-    display.textContent = result;
     return result;
+}
+
+function handleOverflow(num,where){
+    maxLength = where === 'bottom' ? 14 : 12;
+    var intPartLength = `${num - (num % 1.0)}`.length;   
+    console.log('max length' + maxLength); 
+    return (maxLength - intPartLength) < 0 ? `${(num).toExponential(maxLength/2)}` : num.toFixed(maxLength - intPartLength);
 }
 
 function isEqual(){
@@ -204,6 +216,10 @@ function isEqual(){
     console.log(firstNum,operator,secondNum);
     firstNum = calculate(firstNum,operator,secondNum);
     displayBottom.textContent = firstNum;
+    var isOverflowing = displayBottom.clientWidth < displayBottom.scrollWidth;
+    if (isOverflowing){
+        displayBottom.textContent = handleOverflow(firstNum, 'bottom');
+    }
     displayTop.textContent = '';
     firstNum = '';
     secondNum = '';
