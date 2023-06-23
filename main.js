@@ -209,20 +209,19 @@ function handleOverflow(num,where){
 function isEqual(){
     const displayBottom = document.querySelector('.display-bottom');
     const displayTop =  document.querySelector('.display-top');
-    if(firstNum != '') {
+    if(firstNum != '' && displayBottom.textContent != '') {
         secondNum = displayBottom.textContent;
         console.log(secondNum);
-    }
-    console.log(firstNum,operator,secondNum);
-    firstNum = calculate(firstNum,operator,secondNum);
-    displayBottom.textContent = firstNum;
-    var isOverflowing = displayBottom.clientWidth < displayBottom.scrollWidth;
-    if (isOverflowing){
-        displayBottom.textContent = handleOverflow(firstNum, 'bottom');
-    }
-    displayTop.textContent = '';
-    firstNum = '';
-    secondNum = '';
+        firstNum = calculate(firstNum,operator,secondNum);
+        displayBottom.textContent = firstNum;
+        var isOverflowing = displayBottom.clientWidth < displayBottom.scrollWidth;
+        if (isOverflowing){
+            displayBottom.textContent = handleOverflow(firstNum, 'bottom');
+        }
+        displayTop.textContent = '';
+        firstNum = '';
+        secondNum = '';
+    } 
 }
 
 //evenlistners 
