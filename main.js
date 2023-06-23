@@ -58,7 +58,7 @@ function minus(a,b){
     return a-b;
 }
 function divide(a,b){
-    return a/b;
+    return b > 0 ? a/b: alert('💀');
 }
 function mul(a,b){
     return a*b;
@@ -73,8 +73,8 @@ function power(a,b){
     return a**b;
 }
 function factorial(a){
-    if (a === 0) return 1;
-    return a*factorial(a-1);
+    a = parseInt(a);
+    return a === 0 ? 1 : a*factorial(a-1);
 }
 function sqrt(a){
     return Math.sqrt(a);
@@ -107,20 +107,26 @@ function backspace(){
 }
 
 //============display functions==============
-function displayOperator(operator){
-    const display = document.querySelector('.display-bottom');
-    display.textContent += operator;
-
-}
 function displayNumber(digit){
     const display = document.querySelector('.display-bottom');
     display.textContent += digit;
 }
-function handleOverflow(num,where){
-    maxLength = where === 'bottom' ? 14 : 12;
-    var intPartLength = `${num - (num % 1.0)}`.length;   
-    console.log('max length' + maxLength); 
-    return (maxLength - intPartLength) < 0 ? `${(num).toExponential(maxLength/2)}` : num.toFixed(maxLength - intPartLength);
+function handleOverflow(num,where='bottom',isOverflowing='true'){
+    isOverflowing = isOverflowing;
+    if (isOverflowing) {
+            if (`${num}`.includes('.')){
+        maxLength = where === 'bottom' ? 14 : 12;
+        var intPartLength = `${num - (num % 1.0)}`.length;   
+        return (maxLength - intPartLength) < 0 ? `${(num).toExponential(maxLength/2)}` : num.toFixed(maxLength - intPartLength);
+    }
+    else {
+        maxLength = 14;
+        var intPartLength = `${num}`.length;   
+        if (intPartLength > maxLength){ 
+            return `${(num).toExponential(maxLength/2)}`;
+        } else return num
+    }
+    }
 }
 //============calculate functions==============
 function calculate(firstNum, oper, secondNum){
@@ -147,7 +153,7 @@ function calculate(firstNum, oper, secondNum){
         case '1/x':
             result = oneOverX(firstNum);
             break;
-        case 'x^y':
+        case 'y^':
             result = power(firstNum,secondNum);
             break;
         case 'x!':
@@ -259,5 +265,75 @@ operatorButtons.forEach((button)=> button.addEventListener('click', () =>{
     }
 }));
 
+//misc operators
+const miscButtons = document.querySelectorAll('.misc-item');
+miscButtons.forEach((button) => button.addEventListener('click', () => {
+    const displayBottom = document.querySelector('.display-bottom')
+    const currentNum = displayBottom.textContent;
+    switch(button.textContent){
+        case 'pi':
+            if (currentNum === ''){
+                displayNumber((handleOverflow(Math.PI)));
+                
+            }
+            break;
+        case 'e':
+            if (currentNum === ''){
+                displayNumber((handleOverflow(Math.exp(1))));
+                break;
+            }
+            break;
+        case '1/x':
+            if (currentNum != ''){
+                if (currentNum != 0){
+                displayBottom.textContent = '';
+                displayNumber(handleOverflow(oneOverX(currentNum)));
+                break;
+                } else {
+                    alert('💀')
+                }
+            }
+        case 'y^':
+            if (currentNum != ''){
+                setOperator(('y^'));
+                break;
+            }
+        case '!':
+            if (currentNum != ''){
+                if (currentNum > 0){
+                    displayBottom.textContent = '';
+                    displayNumber(handleOverflow(factorial(currentNum)));
+                    break;
+                } 
 
-main();
+            }
+        case 'sqrt':
+            if (currentNum != ''){
+                if (currentNum > 0){
+                displayBottom.textContent = '';
+                displayNumber(handleOverflow(sqrt(currentNum)));
+                break;
+                }else {alert('💀?');break}
+            }
+        case 'log':
+            if (currentNum != ''){
+                if (currentNum > 0){
+                displayBottom.textContent = '';
+                displayNumber(handleOverflow(log(currentNum)));
+                break;}
+                else {alert('💀?');break}
+            }
+        case '^2':
+            if (currentNum != ''){
+                displayBottom.textContent = '';
+                displayNumber(handleOverflow(square(currentNum)));
+                break;
+            }
+        case '%':
+            if (currentNum != ''){
+                displayBottom.textContent = '';
+                displayNumber(handleOverflow(percentage(currentNum)));
+                break;
+            }
+    }
+}));
