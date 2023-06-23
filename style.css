@@ -3,6 +3,9 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto Mono', monospace;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none; 
 }
 
 .main-container {
@@ -34,9 +37,9 @@
     width: 90%;
     background-color: rgb(255, 255, 255);
     display: flex;
-    /* align-items: center;
-    justify-content: flex-end; */
-    padding:  0 1rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
     font-size: 2.5rem;
     flex: 1;
     color: rgb(0, 0, 0);
@@ -44,6 +47,29 @@
     font-style: italic;
     font-weight:200;
     overflow: hidden;
+
+
+    .display-top  {
+        padding-left: 0.25rem;
+        background-color: gray;
+        width: 100%;
+        height: 40%;
+        text-align: left;
+        -webkit-user-select: text;
+        -ms-user-select: text;
+        user-select:text; 
+    }
+    .display-bottom {
+        padding-top: 1.75rem;
+        padding-right: 0.25rem;
+        background-color: bisque;
+        width: 100%;
+        height: 60%;
+        text-align: right;
+        -webkit-user-select: text;
+        -ms-user-select: text;
+        user-select:text;   
+    }
 }
 
 .input {

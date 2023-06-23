@@ -39,7 +39,7 @@ const miscInARow = 3;
 const numOfMisc = miscInAColumn*miscInARow;
 for (let i = 0; i <numOfMisc; i++){
     const div = document.createElement('div');
-    div.classList.add('digit-item');
+    div.classList.add('misc-item');
     div.style.height = `${100/miscInAColumn}%`;
     div.style.width = `${100/miscInARow}%`;
     div.style.backgroundColor = `rgb(0,0,${(i+1)*(255/numOfMisc)})`;
@@ -49,7 +49,7 @@ for (let i = 0; i <numOfMisc; i++){
 }
 }
 createCalc();
-var firstNum,secondNum,operator;
+var firstNum= '',secondNum= '',operator = '';
 
 //============basic functions==============
 function plus(a,b){
@@ -65,6 +65,38 @@ function mul(a,b){
     return a*b;
 }
 
+function setOperator(oper){
+    operator = oper;
+    const displayBottom = document.querySelector('.display-bottom');
+    const displayTop = document.querySelector('.display-top');
+    if (firstNum === ''){
+        firstNum = displayBottom.textContent;
+        displayBottom.textContent = '';
+        displayTop.textContent = firstNum + oper;
+    } else if (displayBottom.textContent != '') {
+        var prevOper = (displayTop.textContent);
+        prevOper = prevOper[prevOper.length -1];
+        secondNum = displayBottom.textContent;
+        console.log(prevOper);
+        firstNum = calculate(firstNum, prevOper, secondNum);
+        console.log(firstNum);
+        secondNum = '';
+        displayBottom.textContent = '';
+        displayTop.textContent = firstNum + oper;
+    }
+    
+
+}
+
+function changeSign(){
+    const display = document.querySelector('.display-bottom');
+    var currentNum = display.textContent
+    currentNum = currentNum.includes('.') ? parseFloat(currentNum):parseInt(currentNum);
+    currentNum *= -1
+    if (!(display.textContent == '')){
+        display.textContent = currentNum;
+    }
+}
 
 //============misc functions==============
 
@@ -94,7 +126,7 @@ function percentage(a){
 
 //clear and backspace functions
 function clearAll(){
-    const display = document.querySelector('.display');
+    const display = document.querySelector('.display-bottom');
     display.textContent = '';
     firstNum = '';
     secondNum = '';
@@ -102,27 +134,28 @@ function clearAll(){
 }
 
 function backspace(){
-    const display = document.querySelector('.display');
-    var currentDisplay = display.textContent
-    display.textContent = currentDisplay.substring(0, currentDisplay.length-1);
+    const display = document.querySelector('.display-bottom');
+    var displayBottom = display.textContent
+    display.textContent = displayBottom.substring(0, displayBottom.length-1);
 }
 
 //============display functions==============
 function displayOperator(operator){
-    const display = document.querySelector('.display');
+    const display = document.querySelector('.display-bottom');
     display.textContent += operator;
+
 }
 function displayNumber(digit){
-    const display = document.querySelector('.display');
+    const display = document.querySelector('.display-bottom');
     display.textContent += digit;
 }
 //============calculate functions==============
-function calculate(){
-    const display = document.querySelector('.display');
+function calculate(firstNum, oper, secondNum){
+    const display = document.querySelector('.display-bottom');
     let result;
-    firstNum = parseInt(firstNum);
-    secondNum = parseInt(secondNum);
-    switch(operator){
+    firstNum = parseFloat(firstNum);
+    secondNum = parseFloat(secondNum);
+    switch(oper){
         case '+':
             result = plus(firstNum,secondNum);
             break;
@@ -158,9 +191,57 @@ function calculate(){
             break;
     }
     display.textContent = result;
-    firstNum = result;
-    secondNum = '';
-    operator = '';
+    return result;
 }
 
+function isEqual(){
+    const displayBottom = document.querySelector('.display-bottom');
+    const displayTop =  document.querySelector('.display-top');
+    if(firstNum != '') {
+        secondNum = displayBottom.textContent;
+        console.log(secondNum);
+    }
+    console.log(firstNum,operator,secondNum);
+    firstNum = calculate(firstNum,operator,secondNum);
+    displayBottom.textContent = firstNum;
+    displayTop.textContent = '';
+    firstNum = '';
+    secondNum = '';
+}
 
+//evenlistners 
+
+const digitButtons = document.querySelectorAll('.digit-item');
+digitButtons.forEach((button) => button.addEventListener(('click'), ()=>{
+    const currentNum = document.querySelector('.display-bottom').textContent;
+    const toBeInput = button.textContent;
+    if (!(toBeInput ==='+/-' || toBeInput === '.')){
+        displayNumber(toBeInput);
+    } else if(toBeInput ==='+/-'){
+        changeSign();
+    } else if (toBeInput === '.'){
+        if(!(currentNum.includes('.'))){
+            displayNumber(toBeInput);
+        }
+    }
+}));
+
+const operatorButtons = document.querySelectorAll('.operator-item');
+operatorButtons.forEach((button)=> button.addEventListener('click', () =>{
+    if (!(button.textContent === 'AC' ||button.textContent === 'del' || button.textContent === '=')){
+        setOperator(button.textContent);
+    } else{
+        switch(button.textContent){
+            case 'AC':
+                clearAll();
+                break;
+            case 'del':
+                backspace();
+                break;
+            case '=':
+                isEqual()
+                break;
+        }   
+                
+    }
+}));
