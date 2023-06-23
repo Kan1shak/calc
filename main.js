@@ -1,3 +1,5 @@
+var firstNum= '',secondNum= '',operator = '';
+//======fucntion to create calc
 function createCalc(){
     //create divs for operators
 const operators = document.querySelector('.operators');
@@ -48,9 +50,6 @@ for (let i = 0; i <numOfMisc; i++){
     miscFunctions.appendChild(div);
 }
 }
-createCalc();
-var firstNum= '',secondNum= '',operator = '';
-
 //============basic functions==============
 function plus(a,b){
     return a+b;
@@ -63,43 +62,6 @@ function divide(a,b){
 }
 function mul(a,b){
     return a*b;
-}
-
-function setOperator(oper){
-    operator = oper;
-    const displayBottom = document.querySelector('.display-bottom');
-    const displayTop = document.querySelector('.display-top');
-    if (firstNum === ''){
-        firstNum = displayBottom.textContent;
-        displayBottom.textContent = '';
-        displayTop.textContent = firstNum + oper;
-        var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
-    if (isOverflowing){
-        displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
-    }
-    } else if (displayBottom.textContent != '') {
-        var prevOper = (displayTop.textContent);
-        prevOper = prevOper[prevOper.length -1];
-        secondNum = displayBottom.textContent;
-        console.log(prevOper);
-        firstNum = calculate(firstNum, prevOper, secondNum);
-        console.log(firstNum);
-        secondNum = '';
-        displayBottom.textContent = '';
-        displayTop.textContent = firstNum + oper;
-    }
-    
-
-}
-
-function changeSign(){
-    const display = document.querySelector('.display-bottom');
-    var currentNum = display.textContent
-    currentNum = currentNum.includes('.') ? parseFloat(currentNum):parseInt(currentNum);
-    currentNum *= -1
-    if (!(display.textContent == '')){
-        display.textContent = currentNum;
-    }
 }
 
 //============misc functions==============
@@ -128,7 +90,7 @@ function percentage(a){
 }
 
 
-//clear and backspace functions
+//========clear and backspace functions=======
 function clearAll(){
     const displayBottom = document.querySelector('.display-bottom');
     const displayTop = document.querySelector('.display-top');
@@ -138,7 +100,6 @@ function clearAll(){
     secondNum = '';
     operator = '';
 }
-
 function backspace(){
     const display = document.querySelector('.display-bottom');
     var displayBottom = display.textContent
@@ -154,6 +115,12 @@ function displayOperator(operator){
 function displayNumber(digit){
     const display = document.querySelector('.display-bottom');
     display.textContent += digit;
+}
+function handleOverflow(num,where){
+    maxLength = where === 'bottom' ? 14 : 12;
+    var intPartLength = `${num - (num % 1.0)}`.length;   
+    console.log('max length' + maxLength); 
+    return (maxLength - intPartLength) < 0 ? `${(num).toExponential(maxLength/2)}` : num.toFixed(maxLength - intPartLength);
 }
 //============calculate functions==============
 function calculate(firstNum, oper, secondNum){
@@ -198,14 +165,6 @@ function calculate(firstNum, oper, secondNum){
     }
     return result;
 }
-
-function handleOverflow(num,where){
-    maxLength = where === 'bottom' ? 14 : 12;
-    var intPartLength = `${num - (num % 1.0)}`.length;   
-    console.log('max length' + maxLength); 
-    return (maxLength - intPartLength) < 0 ? `${(num).toExponential(maxLength/2)}` : num.toFixed(maxLength - intPartLength);
-}
-
 function isEqual(){
     const displayBottom = document.querySelector('.display-bottom');
     const displayTop =  document.querySelector('.display-top');
@@ -223,9 +182,48 @@ function isEqual(){
         secondNum = '';
     } 
 }
+function changeSign(){
+    const display = document.querySelector('.display-bottom');
+    var currentNum = display.textContent
+    currentNum = currentNum.includes('.') ? parseFloat(currentNum):parseInt(currentNum);
+    currentNum *= -1
+    if (!(display.textContent == '')){
+        display.textContent = currentNum;
+    }
+}
+function setOperator(oper){
+    operator = oper;
+    const displayBottom = document.querySelector('.display-bottom');
+    const displayTop = document.querySelector('.display-top');
+    if (firstNum === ''){
+        firstNum = displayBottom.textContent;
+        displayBottom.textContent = '';
+        displayTop.textContent = firstNum + oper;
+        var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
+    if (isOverflowing){
+        displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+    }
+    } else if (displayBottom.textContent != '') {
+        var prevOper = (displayTop.textContent);
+        prevOper = prevOper[prevOper.length -1];
+        secondNum = displayBottom.textContent;
+        console.log(prevOper);
+        firstNum = calculate(firstNum, prevOper, secondNum);
+        console.log(firstNum);
+        secondNum = '';
+        displayBottom.textContent = '';
+        displayTop.textContent = firstNum + oper;
+    }
+    
 
-//evenlistners 
+}
 
+//creating calc
+createCalc();
+
+//=============evenlistners==============
+
+//input buttons
 const digitButtons = document.querySelectorAll('.digit-item');
 digitButtons.forEach((button) => button.addEventListener(('click'), ()=>{
     const currentNum = document.querySelector('.display-bottom').textContent;
@@ -240,7 +238,7 @@ digitButtons.forEach((button) => button.addEventListener(('click'), ()=>{
         }
     }
 }));
-
+//main operators
 const operatorButtons = document.querySelectorAll('.operator-item');
 operatorButtons.forEach((button)=> button.addEventListener('click', () =>{
     if (!(button.textContent === 'AC' ||button.textContent === 'del' || button.textContent === '=')){
@@ -260,3 +258,6 @@ operatorButtons.forEach((button)=> button.addEventListener('click', () =>{
                 
     }
 }));
+
+
+main();
