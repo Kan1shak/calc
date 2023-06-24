@@ -5,10 +5,12 @@ function createCalc(){
     const operators = document.querySelector('.operators');
     const numOfOperators = 7;
     const operatorList = ['del', 'AC', '/', '*', '-', '+', '='];
+    const operatorID = ['del', 'AC', 'divide', 'multiply', 'minus', 'plus', 'equals'];
     for (let i = 0; i < numOfOperators; i++){
         const div = document.createElement('div');
         const span = document.createElement('span');
         div.classList.add('operator-item');
+        div.setAttribute('id', operatorID[i]);
         div.style.width = '100%';
         div.style.height = `${100/numOfOperators}%`;
         span.style.width = '100%';
@@ -20,6 +22,7 @@ function createCalc(){
 
     //create divs for numbers
     const digitList = [7,8,9,4,5,6,1,2,3,'+/-', 0, '.'];
+    const digitID = ['seven', 'eight', 'nine', 'four', 'five', 'six', 'one', 'two', 'three', 'sign', 'zero', 'decimal'];
     const digits = document.querySelector('.digits');
     const digitsInAColumn = 4;
     const digitsInARow = 3;
@@ -28,6 +31,7 @@ function createCalc(){
         const div = document.createElement('div');
         const span = document.createElement('span');
         div.classList.add('digit-item');
+        div.setAttribute('id', digitID[i]);
         div.style.height = `${100/digitsInAColumn}%`;
         div.style.width = `${100/digitsInARow}%`;
         span.style.width = '100%';
@@ -39,6 +43,7 @@ function createCalc(){
 
     //create divs for misc functions
     const miscList = ['pi', 'e', '1/x', 'y^', '!', 'sqrt', 'log', '^2', '%'];
+    const miscID = ['pi', 'euler', 'one-by-x', 'to-the-power', 'factorial', 'sqrt', 'log', 'square', 'percentage'];
     const miscFunctions = document.querySelector('.misc');
     const miscInAColumn = 3;
     const miscInARow = 3;
@@ -47,6 +52,7 @@ function createCalc(){
         const div = document.createElement('div');
         const span = document.createElement('span');
         div.classList.add('misc-item');
+        div.setAttribute('id', miscID[i]);
         div.style.height = `${100/miscInAColumn}%`;
         div.style.width = `${100/miscInARow}%`;
         span.style.width = '100%';
@@ -92,6 +98,7 @@ function square(a){
     return a**2;
 }
 function percentage(a){
+    
     return a/100;
 }
 
@@ -121,12 +128,12 @@ function handleOverflow(num,where='bottom',isOverflowing='true'){
     isOverflowing = isOverflowing;
     if (isOverflowing) {
             if (`${num}`.includes('.')){
-        maxLength = where === 'bottom' ? 12 : 10;
+        maxLength = where === 'bottom' ? 10 : 8;
         var intPartLength = `${num - (num % 1.0)}`.length;   
         return (maxLength - intPartLength) < 0 ? `${(num).toExponential(maxLength/2)}` : num.toFixed(maxLength - intPartLength);
     }
     else {
-        maxLength = 14;
+        maxLength = 12;
         var intPartLength = `${num}`.length;   
         if (intPartLength > maxLength){ 
             return `${(num).toExponential(maxLength/2)}`;
@@ -182,7 +189,6 @@ function isEqual(){
     const displayTop =  document.querySelector('.display-top');
     if(firstNum != '' && displayBottom.textContent != '') {
         secondNum = displayBottom.textContent;
-        console.log(secondNum);
         firstNum = calculate(firstNum,operator,secondNum);
         displayBottom.textContent = firstNum;
         var isOverflowing = displayBottom.clientWidth < displayBottom.scrollWidth;
@@ -211,33 +217,50 @@ function setOperator(oper){
         //pass
     } 
     else if (operator != '') {
-        operator = oper;
-        displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
-    }  else {
-        operator = oper;
-        if (firstNum === ''){
-            firstNum = displayBottom.textContent;
-            displayBottom.textContent = '';
-            displayTop.textContent = firstNum + oper;
-            var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
-        if (isOverflowing){
-            displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+            if (displayBottom.textContent != '' && displayTop.textContent != ''){
+                var topContent = displayTop.textContent;
+                prevOper = topContent[topContent.length -1];
+                firstNum = topContent.substring(0, topContent.length-1);
+                secondNum = displayBottom.textContent;
+                displayBottom.textContent = '';
+                firstNum = calculate(firstNum, prevOper, secondNum);
+                operator = oper;
+                displayTop.textContent = firstNum + oper;
+                var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
+                if (isOverflowing){
+                    displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+                }
+                
+            }
+            else {
+                operator = oper;
+                displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
         }
-        } else if (displayBottom.textContent != '') {
-            var prevOper = (displayTop.textContent);
-            prevOper = prevOper[prevOper.length -1];
-            secondNum = displayBottom.textContent;
-            console.log(prevOper);
-            firstNum = calculate(firstNum, prevOper, secondNum);
-            console.log(firstNum);
-            secondNum = '';
-            displayBottom.textContent = '';
-            displayTop.textContent = firstNum + oper;
-        } 
-    }
-
-    
-
+    } else {
+            operator = oper;
+            if (firstNum === ''){
+                firstNum = displayBottom.textContent;
+                displayBottom.textContent = '';
+                displayTop.textContent = firstNum + oper;
+                var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
+                if (isOverflowing){
+                    displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+                }
+            } else if (displayBottom.textContent != '') {
+                var prevOper = (displayTop.textContent);
+                prevOper = prevOper[prevOper.length -1];
+                secondNum = displayBottom.textContent;
+                firstNum = calculate(firstNum, prevOper, secondNum);
+                secondNum = '';
+                displayBottom.textContent = '';
+                var isOverflowing = displayTop.clientWidth < displayTop.scrollWidth;
+                if (isOverflowing){
+                    displayTop.textContent = handleOverflow(parseFloat(firstNum), 'top') + oper;
+                } else {
+                    displayTop.textContent = firstNum + oper;
+                }   
+            }
+        }
 }
 
 //creating calc
@@ -312,7 +335,6 @@ miscButtons.forEach((button) => button.addEventListener('click', () => {
             }
         case 'y^':
             if ((currentNum != '' && topExpr === '') ||(currentNum === '' && topExpr != '') || (currentNum != '' && topExpr != '')){
-                console.log(topExpr);
                 setOperator(('^'));
                 break;
             }
@@ -355,3 +377,90 @@ miscButtons.forEach((button) => button.addEventListener('click', () => {
             }
     }
 }));
+
+//keyboard support
+document.addEventListener('keydown', (e) => {
+    const key = e.key;
+    switch(key){
+        case '1':
+            document.querySelector('#one').click();
+            break;
+        case '2':
+            document.querySelector('#two').click();
+            break;
+        case '3':
+            document.querySelector('#three').click();
+            break;
+        case '4':
+            document.querySelector('#four').click();
+            break;
+        case '5':
+            document.querySelector('#five').click();
+            break;
+        case '6':
+            document.querySelector('#six').click();
+            break;
+        case '7':
+            document.querySelector('#seven').click();
+            break;
+        case '8':
+            document.querySelector('#eight').click();
+            break;
+        case '9':
+            document.querySelector('#nine').click();
+            break;
+        case '0':
+            document.querySelector('#zero').click();
+            break;
+        case '.':
+            document.querySelector('#decimal').click();
+            break;
+        case '+':
+            document.querySelector('#plus').click();
+            break;
+        case '-':
+            document.querySelector('#minus').click();
+            break;
+        case '*':
+            document.querySelector('#multiply').click();
+            break;
+        case '/':
+            document.querySelector('#divide').click();
+            break;
+        case 'Enter':
+            document.querySelector('#equals').click();
+            break;
+        case 'Backspace':
+            document.querySelector('#del').click();
+            break;
+        case 'Escape':
+            document.querySelector('#AC').click();
+            break;
+        case 'p':
+            document.querySelector('#pi').click();
+            break;
+        case 'e':
+            document.querySelector('#euler').click();
+            break;
+        case 'x':
+            document.querySelector('#one-by-x').click();
+            break;
+        case '^':
+            document.querySelector('#to-the-power').click();
+            break;
+        case '!':
+            document.querySelector('#factorial').click();
+            break;
+        case 's':
+            document.querySelector('#sqrt').click();
+            break;
+        case 'l':
+            document.querySelector('#log').click();
+            break;
+        case 't':
+            document.querySelector('#square').click();
+            break;
+        case '%':
+            document.querySelector('#percentage').click();
+            break;
+    }});
