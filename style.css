@@ -8,6 +8,11 @@
     -ms-user-select: none;
     user-select: none; 
 }
+
+body {
+    background-color: #EEF0F4;
+}
+
 *::selection {
     background-color: #f2d5ff;
 }
@@ -123,8 +128,7 @@
     cursor:pointer;
     color: #000;
     transition: background-image ease-in-out 0.2s;
-    background: linear-gradient(144deg,#ffffff, #5B42F3 50%,#00DDEB),
-                url(images/noise.svg);
+    background: linear-gradient(144deg,#ffffff, #5B42F3 50%,#00DDEB);
     transition: all 0.2s ease-in-out;
     border-radius: 40px;
     scale: 0.85;
