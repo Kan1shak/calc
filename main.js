@@ -70,7 +70,7 @@ function minus(a,b){
     return a-b;
 }
 function divide(a,b){
-    return b > 0 ? a/b: alert('💀');
+    return b != 0 ? a/b: alert('💀');
 }
 function mul(a,b){
     return a*b;
@@ -85,8 +85,10 @@ function power(a,b){
     return a**b;
 }
 function factorial(a){
-    a = parseInt(a);
-    return a === 0 ? 1 : a*factorial(a-1);
+        if (!`${a}`.includes('.')){
+        a = parseInt(a);
+        return a === 0 ? 1 : a*factorial(a-1);
+    } else return parseFloat(a);
 }
 function sqrt(a){
     return Math.sqrt(a);
