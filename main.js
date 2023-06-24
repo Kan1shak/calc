@@ -266,14 +266,15 @@ function setOperator(oper){
 //creating calc
 createCalc();
 
+
 //=============evenlistners==============
 
 //input buttons
 const digitButtons = document.querySelectorAll('.digit-item');
 digitButtons.forEach((button) => button.addEventListener(('click'), ()=>{
-    const currentNum = document.querySelector('.display-bottom').textContent;
+    const currentNum = document.querySelector('.display-bottom').textContent;   
     const toBeInput = button.textContent;
-    if (!(toBeInput ==='+/-' || toBeInput === '.')){
+    if (!(toBeInput ==='+/-' || toBeInput === '.')){ 
         displayNumber(toBeInput);
     } else if(toBeInput ==='+/-'){
         changeSign();
